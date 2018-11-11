@@ -7,6 +7,14 @@ import json
 class RufoPluginListener(sublime_plugin.EventListener):
   def on_pre_save(self, view):
     settings = sublime.load_settings('sublime-rufo.sublime-settings')
+
+    if settings.get('auto_format') == 'dotrufo':
+      res = []
+      for folder in self.view.window.folders():
+        res.append(os.path.exists(folder + '/.rufo'))
+      if any(res):
+        view.run_command('rufo_format')
+
     if settings.get('auto_format') == None or settings.get('auto_format') == True:
       view.run_command('rufo_format')
 
